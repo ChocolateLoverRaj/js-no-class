@@ -103,6 +103,43 @@ getOrDefault(['key1', 'key2'], keys => getMultiKey(keys, keys => normalMapGet(no
 ```
 With this way the only *data* you have to store is a normal `Map`!
 
+## Using flexible functions
+The examples will use TypeScript because it's easier to understand the data types.
+
+### Emitter example
+There are so many different emitters you can use in JavaScript. The most common emitters are [Node.js `EventEmitter`](https://nodejs.dev/learn/the-nodejs-event-emitter) and [`eventemitter3`](https://www.npmjs.com/package/eventemitter3). Both of these emitters are `class`. This example will show a very flexible emitter, which is emitter logic which you can wrap in anything.
+```ts
+type ForEachCallback<ItemData> = (itemData: ItemData) => void
+type ForEach<ForEachData, ItemData> = (data: ForEachData, callback: ForEachCallback<ItemData>) => void
+
+type Listener<T extends unknown[]> = (...inputs: T) => void
+const emit = <ForEachData, T extends unknown[]>(
+  forEachData: ForEachData, 
+  forEach: ForEach<ForEachData, Listener<T>>
+): void => {
+  forEach(forEachData, listener => listener())
+}
+```
+Things that make this emitter very flexible:
+- No requirement of needing a `Set`, `Array`, or `Map` to store listeners. Instead of using `Array.prototype.forEach()`, it lets you customize the forEach function.
+- No requirement of how you add / remove listeners
+
+Example usages of `emit`:
+
+With `Array`
+```ts
+const arrayForEach: ForEach<unknown[], unknown> = (arr, callback) => arr.forEach(callback)
+
+emit(myArrayOfListeners, arrayForEach)
+```
+
+With `Set`
+```ts
+const setForEach: ForEach<Set<unknown>, unknown> = (set, callback) => set.forEach(callback)
+
+emit(mySetOfListeners, arrayForEach)
+```
+
 ## Contributing
 ### Adding a bad thing about not using `class`
 Create an issue with a reason that is supporting `class`
