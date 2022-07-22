@@ -51,3 +51,13 @@ class Counter {
   subtract () {}
 }
 ```
+
+## Contributing
+### Adding a bad thing about not using `class`
+Create an issue with a reason that is supporting `class`
+
+### Adding another reason to not use `class`
+Create an issue or pull request
+
+### Talking about this topic
+Open a discussion
