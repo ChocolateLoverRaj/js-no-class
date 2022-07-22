@@ -52,6 +52,57 @@ class Counter {
 }
 ```
 
+### Can't extend >1 `class`
+Here is an example of two usefull `class`s:
+```js
+class MultiKeyMap extends Map {
+  // Methods overrided to use multiple keys 
+  get () {}
+  set () {}
+  has () {}
+  delete () {}
+}
+```
+```js
+class DefaultedMap {
+  constructor (getDefault) {}
+  
+  // Calls `getDefault` if no key
+  get () {}
+}
+```
+What if you wanted a `DefaultedMultiKeyMap`? There is no way to do this that isn't messy. Here is a messy way, based on [this StackOverflow answer](https://stackoverflow.com/a/62778691/11145447):
+```js
+const getDefaultedMap = BaseMap => class extends BaseMap {
+  // Defaulted map overrides
+}
+
+const DefaultedMultiKeyMap = getDefaultedMap(MultiKeyMap)
+```
+One problem with this is that it relies on the defaulted map to be a function which returns a custom `class`. If you're using a js library and it's a class, it probably doesn't have a way to be based off of two classes.
+
+Here is what you can do using flexible functions:
+
+`multiKeyMap/get.js`
+```js
+const get = (keys, internalGet) => {}
+```
+`defaultedMap/get.js`
+```js
+const get = (key, defaultFn, internalGet) => {}
+```
+`normalMap/get.js`
+```js
+const get = (map, key) => map.get(key)
+```
+Your code
+```js
+const normalMap = new Map()
+
+getOrDefault(['key1', 'key2'], keys => getMultiKey(keys, keys => normalMapGet(normalMap, keys)))
+```
+With this way the only *data* you have to store is a normal `Map`!
+
 ## Contributing
 ### Adding a bad thing about not using `class`
 Create an issue with a reason that is supporting `class`
