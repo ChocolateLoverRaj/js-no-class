@@ -1,3 +1,6 @@
+> [!TIP]
+> Write code in Rust instead. Rust avoids the problems here by having *traits*, which are very cool.
+
 # Stop writing `class` in JavaScript
 This writing is to try to convince you to stop doing this:
 ```js
